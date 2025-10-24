@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Navatara + Navamsa Lord Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f0f4f8;
+    }
+    h2 {
+      color: #333;
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: bold;
+    }
+    select, input {
+      padding: 8px;
+      width: 200px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #0078d7;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
+    .result {
+      margin-top: 25px;
+      padding: 15px;
+      background: #ffffff;
+      border-left: 4px solid #0078d7;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h2>Navatara + Navamsa Lord Calculator</h2>
+
+  <label for="nakshatra">Select Janma Nakshatra:</label>
+  <select id="nakshatra"></select>
+
+  <label for="pada">Select Pada (1 to 4):</label>
+  <select id="pada">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+  </select>
+
+  <label for="year">Enter Year of Life:</label>
+  <input type="number" id="year" min="1" max="120">
+
+  <button onclick="calculate()">Calculate</button>
+
+  <div class="result" id="output"></div>
+
+  <script>
+    const nakshatras = [
+      "Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra","Punarvasu","Pushya","Ashlesha",
+      "Magha","Purva Phalguni","Uttara Phalguni","Hasta","Chitra","Swati","Vishakha","Anuradha","Jyeshtha",
+      "Moola","Purva Ashadha","Uttara Ashadha","Shravana","Dhanishta","Shatabhisha","Purva Bhadrapada",
+      "Uttara Bhadrapada","Revati"
+    ];
+
+    const nakshatraLords = [
+      "Ketu","Venus","Sun","Moon","Mars","Rahu","Jupiter","Saturn","Mercury",
+      "Ketu","Venus","Sun","Moon","Mars","Rahu","Jupiter","Saturn","Mercury",
+      "Ketu","Venus","Sun","Moon","Mars","Rahu","Jupiter","Saturn","Mercury"
+    ];
+
+    const nakshatraToNavamsa = [
+      ["Aries","Taurus","Gemini","Cancer"], ["Leo","Virgo","Libra","Scorpio"], ["Sagittarius","Capricorn","Aquarius","Pisces"],
+      ["Aries","Taurus","Gemini","Cancer"], ["Leo","Virgo","Libra","Scorpio"], ["Sagittarius","Capricorn","Aquarius","Pisces"],
+      ["Aries","Taurus","Gemini","Cancer"], ["Leo","Virgo","Libra","Scorpio"], ["Sagittarius","Capricorn","Aquarius","Pisces"],
+      ["Aries","Taurus","Gemini","Cancer"], ["Leo","Virgo","Libra","Scorpio"], ["Sagittarius","Capricorn","Aquarius","Pisces"],
+      ["Aries","Taurus","Gemini","Cancer"], ["Leo","Virgo","Libra","Scorpio"], ["Sagittarius","Capricorn","Aquarius","Pisces"],
+      ["Aries","Taurus","Gemini","Cancer"], ["Leo","Virgo","Libra","Scorpio"], ["Sagittarius","Capricorn","Aquarius","Pisces"],
+      ["Aries","Taurus","Gemini","Cancer"], ["Leo","Virgo","Libra","Scorpio"], ["Sagittarius","Capricorn","Aquarius","Pisces"],
+      ["Capricorn","Aquarius","Pisces","Aries"], ["Taurus","Gemini","Cancer","Leo"], ["Virgo","Libra","Scorpio","Sagittarius"],
+      ["Capricorn","Aquarius","Pisces","Aries"], ["Taurus","Gemini","Cancer","Leo"], ["Virgo","Libra","Scorpio","Sagittarius"]
+    ];
+
+    const signLords = {
+      "Aries":"Mars","Taurus":"Venus","Gemini":"Mercury","Cancer":"Moon",
+      "Leo":"Sun","Virgo":"Mercury","Libra":"Venus","Scorpio":"Mars",
+      "Sagittarius":"Jupiter","Capricorn":"Saturn","Aquarius":"Saturn","Pisces":"Jupiter"
+    };
+
+    const navataraLords = [
+      "Sun",      // Janma
+      "Mercury",  // Sampat
+      "Rahu",     // Vipat
+      "Jupiter",  // Kshema
+      "Ketu",     // Pratyak
+      "Moon",     // Sadhana
+      "Saturn",   // Naidhana/Vadha
+      "Venus",    // Mitra
+      "Mars"      // Parama Mitra
+    ];
+
+    const taraTypes = [
+      "Janma", "Sampat", "Vipat", "Kshema", "Pratyak",
+      "Sadhana", "Naidhana/Vadha", "Mitra", "Parama Mitra"
+    ];
+
+    const taraDescriptions = [
+      "Birth, identity, core",
+      "Wealth, gain, support",
+      "Danger, conflict, loss",
+      "Safety, growth, peace",
+      "Obstacle, challenge, delay",
+      "Effort, discipline, action",
+      "Death, risk, downfall",
+      "Ally, harmony, help",
+      "Deep bond, protection, trust"
+    ];
+
+    const taraStartIndexMap = Array(27).fill(0); // All start with Janma Tara
+
+    const nakshatraSelect = document.getElementById("nakshatra");
+    nakshatras.forEach((n,i)=>{
+      const opt=document.createElement("option");
+      opt.value=i;
+      opt.text=n;
+      nakshatraSelect.appendChild(opt);
+    });
+
+    function calculate(){
+      const birthIndex = parseInt(document.getElementById("nakshatra").value);
+      const birthPada = parseInt(document.getElementById("pada").value);
+      const year = parseInt(document.getElementById("year").value);
+
+      if(isNaN(year)||year<1||birthPada<1||birthPada>4){
+        document.getElementById("output").innerHTML="Please enter valid inputs.";
+        return;
+      }
+
+      const runningIndex = (birthIndex + year - 1) % 27;
+      const runningNakshatra = nakshatras[runningIndex];
+
+      const runningPada = ((birthPada-1)+(year-1)) % 4;
+      const navamsaSign = nakshatraToNavamsa[runningIndex][runningPada];
+      const navamsaLord = signLords[navamsaSign];
+
+      const taraIndex = (taraStartIndexMap[birthIndex] + (year - 1)) % 9;
+      const taraName = taraTypes[taraIndex];
+      const taraDesc = taraDescriptions[taraIndex];
+      const navataraLord = navataraLords[taraIndex];
+
+      const nakLord = nakshatraLords[runningIndex];
+
+      const result = `
+        <strong>Year:</strong> ${year}<br>
+        <strong>Running Nakshatra:</strong> ${runningNakshatra}<br>
+        <strong>Running Pada:</strong> ${runningPada+1}<br>
+        <strong>Tara Type:</strong> ${taraName} – ${taraDesc}<br>
+        <strong>Navatara Lord:</strong> ${navataraLord}<br>
+        <strong>Nakshatra Lord:</strong> ${nakLord}<br>
+        <strong>Navamsa Sign:</strong> ${navamsaSign}<br>
+        <strong>Navamsa Lord:</strong> ${navamsaLord}
+      `;
+
+      document.getElementById("output").innerHTML = result;
+    }
+  </script>
+</body>
+</html>
