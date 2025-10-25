@@ -133,6 +133,18 @@
       box-shadow: 0 4px 10px rgba(0,120,215,0.3);
     }
 
+    .secondary-btn {
+      background: #e8eef6;
+      color: var(--primary-dark);
+      margin-top: 10px;
+      border: 1px solid #ccd6e0;
+    }
+
+    .secondary-btn:hover {
+      background: #dce8f8;
+      box-shadow: 0 2px 8px rgba(0,120,215,0.1);
+    }
+
     .result {
       background: var(--card-bg);
       padding: 20px;
@@ -183,6 +195,7 @@
       <select id="current" onchange="toggleInputs('current')"></select>
 
       <button onclick="calculate()">🔍 Lookup</button>
+      <button class="secondary-btn" onclick="resetInputs()">🔄 Reset / Switch Mode</button>
     </div>
 
     <div class="result" id="output">
@@ -207,12 +220,7 @@
     ];
 
     const navataraLords = ["Sun", "Mercury", "Rahu", "Jupiter", "Ketu", "Moon", "Saturn", "Venus", "Mars"];
-
-    const taraTypes = [
-      "Janma", "Sampat", "Vipat", "Kshema", "Pratyak",
-      "Sadhana", "Naidhana/Vadha", "Mitra", "Parama Mitra"
-    ];
-
+    const taraTypes = ["Janma", "Sampat", "Vipat", "Kshema", "Pratyak", "Sadhana", "Naidhana/Vadha", "Mitra", "Parama Mitra"];
     const taraMeanings = [
       "Self, identity, core karma",
       "Wealth, gain, material support",
@@ -228,6 +236,7 @@
     const janmaSelect = document.getElementById("janma");
     const currentSelect = document.getElementById("current");
     const yearInput = document.getElementById("year");
+    const output = document.getElementById("output");
 
     nakshatras.forEach((n, i) => {
       janmaSelect.add(new Option(n, i));
@@ -247,11 +256,18 @@
       }
     }
 
+    function resetInputs() {
+      yearInput.value = "";
+      currentSelect.value = "";
+      currentSelect.disabled = false;
+      yearInput.disabled = false;
+      output.innerHTML = "<em>Inputs cleared. You can now choose Year or Current Nakshatra again.</em>";
+    }
+
     function calculate() {
       const birthIndex = parseInt(janmaSelect.value);
       const year = parseInt(yearInput.value);
       const currentIndex = parseInt(currentSelect.value);
-      const output = document.getElementById("output");
 
       if (isNaN(birthIndex)) {
         output.innerHTML = "<strong>Please select your Janma Nakshatra.</strong>";
