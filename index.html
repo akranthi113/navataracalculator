@@ -1,124 +1,195 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Navatara + Navamsa Lord Calculator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Navatara Lookup</title>
+
   <style>
+    :root {
+      --primary: #0078d7;
+      --primary-dark: #005fa3;
+      --accent: #62b0ff;
+      --bg: #eef3f9;
+      --text: #222;
+      --card-bg: rgba(255, 255, 255, 0.92);
+    }
+
     body {
-      font-family: "Poppins", Arial, sans-serif;
-      background: linear-gradient(135deg, #283048, #859398);
-      color: #222;
+      font-family: 'Poppins', 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 24px;
+      background: linear-gradient(135deg, #e8f0ff, #f9fcff);
+      color: var(--text);
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: center;
-      padding: 20px;
-      margin: 0;
+      align-items: flex-start;
     }
 
     .container {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 40px 50px;
-      max-width: 520px;
       width: 100%;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-      transition: all 0.3s ease;
+      max-width: 520px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      padding: 32px;
+      backdrop-filter: blur(10px);
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     h2 {
       text-align: center;
-      font-size: 26px;
-      margin-bottom: 30px;
-      color: #3a3a3a;
-      letter-spacing: 1px;
+      margin-bottom: 10px;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 1.4rem;
+      letter-spacing: 0.4px;
+    }
+
+    .subtext {
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .note {
+      background: #f0f7ff;
+      padding: 10px 14px;
+      border-left: 4px solid var(--primary);
+      border-radius: 8px;
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .section {
+      background: #fff;
+      padding: 20px;
+      border-radius: 14px;
+      margin-bottom: 22px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: transform 0.2s ease;
+    }
+
+    .section:hover {
+      transform: scale(1.01);
     }
 
     label {
       display: block;
-      margin: 18px 0 8px;
+      margin: 10px 0 6px;
       font-weight: 600;
-      font-size: 15px;
       color: #333;
     }
 
     select, input {
-      padding: 10px;
       width: 100%;
+      padding: 10px 12px;
       font-size: 16px;
-      border: 1px solid #ccc;
+      border: 1px solid #ccd6e0;
       border-radius: 8px;
+      background: #f9fbfd;
+      transition: all 0.2s ease;
       outline: none;
-      background: #fff;
-      color: #222;
-      transition: 0.3s;
-    }
-
-    select:hover, input:hover {
-      border-color: #888;
     }
 
     select:focus, input:focus {
-      border-color: #0078d7;
-      box-shadow: 0 0 4px rgba(0,120,215,0.4);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0,120,215,0.2);
+    }
+
+    select:disabled, input:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background: #f4f4f4;
     }
 
     button {
-      margin-top: 25px;
       width: 100%;
-      padding: 12px 0;
-      font-size: 17px;
-      background: linear-gradient(90deg, #0078d7, #00b4db);
+      margin-top: 16px;
+      padding: 12px;
+      font-size: 16px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
       color: white;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
+      transition: all 0.25s ease;
       font-weight: 600;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      letter-spacing: 0.3px;
     }
 
     button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0,120,215,0.3);
     }
 
     .result {
-      margin-top: 30px;
-      background: #f8fbff;
-      border-left: 5px solid #0078d7;
-      border-radius: 10px;
+      background: var(--card-bg);
       padding: 20px;
-      color: #333;
-      box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
-      line-height: 1.6;
-      font-size: 15px;
+      margin-top: 20px;
+      border-left: 5px solid var(--primary);
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      line-height: 1.7;
+      animation: fadeIn 0.4s ease;
     }
 
     .result strong {
-      color: #0078d7;
+      color: var(--primary-dark);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 13px;
+      color: #777;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 16px;
+      }
+      .container {
+        padding: 20px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>🌙 Navatara + Navamsa Lord Calculator</h2>
+    <h2>🌙 Navatara Lookup using Current Moon Nakshatra or Year</h2>
+    <div class="subtext">Find your Tara and Navatara lord either by your current moon Nakshatra or the year of life.</div>
 
-    <label for="nakshatra">Select Janma Nakshatra:</label>
-    <select id="nakshatra"></select>
+    <div class="note">⚠️ Please select <strong>only one</strong> of the following: <em>Year of Life</em> or <em>Current Nakshatra</em>.</div>
 
-    <label for="pada">Select Pada (1 to 4):</label>
-    <select id="pada">
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-    </select>
+    <div class="section">
+      <label for="janma">Janma Nakshatra</label>
+      <select id="janma"></select>
 
-    <label for="year">Enter Year of Life:</label>
-    <input type="number" id="year" min="1" max="120">
+      <label for="year">Year of Life</label>
+      <input type="number" id="year" min="1" max="120" placeholder="Enter year (e.g. 5)" oninput="toggleInputs('year')">
 
-    <button onclick="calculate()">✨ Calculate</button>
+      <label for="current">Current Nakshatra</label>
+      <select id="current" onchange="toggleInputs('current')"></select>
 
-    <div class="result" id="output"></div>
+      <button onclick="calculate()">🔍 Lookup</button>
+    </div>
+
+    <div class="result" id="output">
+      <em>Select your Janma Nakshatra and either Year or Current Nakshatra to view results here...</em>
+    </div>
+
+    <footer>✨ Designed for cosmic clarity ✨</footer>
   </div>
 
   <script>
@@ -135,90 +206,98 @@
       "Ketu","Venus","Sun","Moon","Mars","Rahu","Jupiter","Saturn","Mercury"
     ];
 
-    const nakshatraToNavamsa = [
-      ["Aries","Taurus","Gemini","Cancer"], ["Leo","Virgo","Libra","Scorpio"], ["Sagittarius","Capricorn","Aquarius","Pisces"],
-      ["Aries","Taurus","Gemini","Cancer"], ["Leo","Virgo","Libra","Scorpio"], ["Sagittarius","Capricorn","Aquarius","Pisces"],
-      ["Aries","Taurus","Gemini","Cancer"], ["Leo","Virgo","Libra","Scorpio"], ["Sagittarius","Capricorn","Aquarius","Pisces"],
-      ["Aries","Taurus","Gemini","Cancer"], ["Leo","Virgo","Libra","Scorpio"], ["Sagittarius","Capricorn","Aquarius","Pisces"],
-      ["Aries","Taurus","Gemini","Cancer"], ["Leo","Virgo","Libra","Scorpio"], ["Sagittarius","Capricorn","Aquarius","Pisces"],
-      ["Aries","Taurus","Gemini","Cancer"], ["Leo","Virgo","Libra","Scorpio"], ["Sagittarius","Capricorn","Aquarius","Pisces"],
-      ["Aries","Taurus","Gemini","Cancer"], ["Leo","Virgo","Libra","Scorpio"], ["Sagittarius","Capricorn","Aquarius","Pisces"],
-      ["Capricorn","Aquarius","Pisces","Aries"], ["Taurus","Gemini","Cancer","Leo"], ["Virgo","Libra","Scorpio","Sagittarius"],
-      ["Capricorn","Aquarius","Pisces","Aries"], ["Taurus","Gemini","Cancer","Leo"], ["Virgo","Libra","Scorpio","Sagittarius"]
-    ];
-
-    const signLords = {
-      "Aries":"Mars","Taurus":"Venus","Gemini":"Mercury","Cancer":"Moon",
-      "Leo":"Sun","Virgo":"Mercury","Libra":"Venus","Scorpio":"Mars",
-      "Sagittarius":"Jupiter","Capricorn":"Saturn","Aquarius":"Saturn","Pisces":"Jupiter"
-    };
-
-    const navataraLords = [
-      "Sun","Mercury","Rahu","Jupiter","Ketu","Moon","Saturn","Venus","Mars"
-    ];
+    const navataraLords = ["Sun", "Mercury", "Rahu", "Jupiter", "Ketu", "Moon", "Saturn", "Venus", "Mars"];
 
     const taraTypes = [
-      "Janma","Sampat","Vipat","Kshema","Pratyak",
-      "Sadhana","Naidhana/Vadha","Mitra","Parama Mitra"
+      "Janma", "Sampat", "Vipat", "Kshema", "Pratyak",
+      "Sadhana", "Naidhana/Vadha", "Mitra", "Parama Mitra"
     ];
 
-    const taraDescriptions = [
-      "Birth, identity, core",
-      "Wealth, gain, support",
-      "Danger, conflict, loss",
-      "Safety, growth, peace",
-      "Obstacle, challenge, delay",
-      "Effort, discipline, action",
-      "Death, risk, downfall",
-      "Ally, harmony, help",
-      "Deep bond, protection, trust"
+    const taraMeanings = [
+      "Self, identity, core karma",
+      "Wealth, gain, material support",
+      "Obstacles, danger, instability",
+      "Growth, comfort, peaceful progress",
+      "Delay, reversal, inner conflict",
+      "Effort, discipline, spiritual work",
+      "Loss, destruction, karmic closure",
+      "Friendship, help, positive alliances",
+      "Divine grace, ultimate protection"
     ];
 
-    const taraStartIndexMap = Array(27).fill(0);
+    const janmaSelect = document.getElementById("janma");
+    const currentSelect = document.getElementById("current");
+    const yearInput = document.getElementById("year");
 
-    const nakshatraSelect = document.getElementById("nakshatra");
-    nakshatras.forEach((n,i)=>{
-      const opt=document.createElement("option");
-      opt.value=i;
-      opt.text=n;
-      nakshatraSelect.appendChild(opt);
+    nakshatras.forEach((n, i) => {
+      janmaSelect.add(new Option(n, i));
+      currentSelect.add(new Option(n, i));
     });
 
-    function calculate(){
-      const birthIndex = parseInt(document.getElementById("nakshatra").value);
-      const birthPada = parseInt(document.getElementById("pada").value);
-      const year = parseInt(document.getElementById("year").value);
+    function toggleInputs(source) {
+      if (source === "year" && yearInput.value !== "") {
+        currentSelect.value = "";
+        currentSelect.disabled = true;
+      } else if (source === "current" && currentSelect.value !== "") {
+        yearInput.value = "";
+        yearInput.disabled = true;
+      } else {
+        currentSelect.disabled = false;
+        yearInput.disabled = false;
+      }
+    }
 
-      if(isNaN(year)||year<1||birthPada<1||birthPada>4){
-        document.getElementById("output").innerHTML="⚠️ Please enter valid inputs.";
+    function calculate() {
+      const birthIndex = parseInt(janmaSelect.value);
+      const year = parseInt(yearInput.value);
+      const currentIndex = parseInt(currentSelect.value);
+      const output = document.getElementById("output");
+
+      if (isNaN(birthIndex)) {
+        output.innerHTML = "<strong>Please select your Janma Nakshatra.</strong>";
         return;
       }
 
-      const runningIndex = (birthIndex + year - 1) % 27;
-      const runningNakshatra = nakshatras[runningIndex];
+      if (!year && isNaN(currentIndex)) {
+        output.innerHTML = "<strong>Please select either Year or Current Nakshatra.</strong>";
+        return;
+      }
 
-      const runningPada = ((birthPada-1)+(year-1)) % 4;
-      const navamsaSign = nakshatraToNavamsa[runningIndex][runningPada];
-      const navamsaLord = signLords[navamsaSign];
+      if (year && !isNaN(currentIndex)) {
+        output.innerHTML = "<strong>Select only one: either Year or Current Nakshatra.</strong>";
+        return;
+      }
 
-      const taraIndex = (taraStartIndexMap[birthIndex] + (year - 1)) % 9;
-      const taraName = taraTypes[taraIndex];
-      const taraDesc = taraDescriptions[taraIndex];
-      const navataraLord = navataraLords[taraIndex];
-      const nakLord = nakshatraLords[runningIndex];
+      let result = "";
 
-      const result = `
-        <strong>Year:</strong> ${year}<br>
-        <strong>Running Nakshatra:</strong> ${runningNakshatra}<br>
-        <strong>Running Pada:</strong> ${runningPada+1}<br>
-        <strong>Tara Type:</strong> ${taraName} – ${taraDesc}<br>
-        <strong>Navatara Lord:</strong> ${navataraLord}<br>
-        <strong>Nakshatra Lord:</strong> ${nakLord}<br>
-        <strong>Navamsa Sign:</strong> ${navamsaSign}<br>
-        <strong>Navamsa Lord:</strong> ${navamsaLord}
-      `;
+      if (year) {
+        const runningIndex = (birthIndex + year - 1) % 27;
+        const runningNakshatra = nakshatras[runningIndex];
+        const nakLord = nakshatraLords[runningIndex];
+        const taraIndex = (year - 1) % 9;
 
-      document.getElementById("output").innerHTML = result;
+        result = `
+          <strong>Mode:</strong> Year-based Progression<br>
+          <strong>Year:</strong> ${year}<br>
+          <strong>Running Nakshatra:</strong> ${runningNakshatra}<br>
+          <strong>Nakshatra Lord:</strong> ${nakLord}<br>
+          <strong>Tara Type:</strong> ${taraTypes[taraIndex]}<br>
+          <strong>Tara Meaning:</strong> ${taraMeanings[taraIndex]}<br>
+          <strong>Navatara Lord:</strong> ${navataraLords[taraIndex]}
+        `;
+      } else {
+        const taraIndex = (currentIndex - birthIndex + 27) % 9;
+        result = `
+          <strong>Mode:</strong> Current Nakshatra Lookup<br>
+          <strong>Janma Nakshatra:</strong> ${nakshatras[birthIndex]}<br>
+          <strong>Current Nakshatra:</strong> ${nakshatras[currentIndex]}<br>
+          <strong>Tara Type:</strong> ${taraTypes[taraIndex]}<br>
+          <strong>Tara Meaning:</strong> ${taraMeanings[taraIndex]}<br>
+          <strong>Navatara Lord:</strong> ${navataraLords[taraIndex]}
+        `;
+      }
+
+      output.innerHTML = result;
     }
   </script>
 </body>
