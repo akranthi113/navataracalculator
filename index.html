@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Navatara Lookup</title>
-
   <style>
     :root {
       --primary: #0078d7;
@@ -291,23 +290,26 @@
         const runningNakshatra = nakshatras[runningIndex];
         const nakLord = nakshatraLords[runningIndex];
         const taraIndex = (year - 1) % 9;
+        const nakCount = ((runningIndex - birthIndex + 27) % 27) + 1;
 
         result = `
           <strong>Mode:</strong> Year-based Progression<br>
           <strong>Year:</strong> ${year}<br>
-          <strong>Running Nakshatra:</strong> ${runningNakshatra}<br>
+          <strong>Running Nakshatra:</strong> ${runningNakshatra} — Nakshatra Number from Janma: <strong>${nakCount}</strong><br>
           <strong>Nakshatra Lord:</strong> ${nakLord}<br>
-          <strong>Tara Type:</strong> ${taraTypes[taraIndex]}<br>
+          <strong>Tara Type:</strong> ${taraTypes[taraIndex]} — Tara Number: <strong>${taraIndex + 1}</strong><br>
           <strong>Tara Meaning:</strong> ${taraMeanings[taraIndex]}<br>
           <strong>Navatara Lord:</strong> ${navataraLords[taraIndex]}
         `;
       } else {
         const taraIndex = (currentIndex - birthIndex + 27) % 9;
+        const nakCount = ((currentIndex - birthIndex + 27) % 27) + 1;
+
         result = `
           <strong>Mode:</strong> Current Nakshatra Lookup<br>
           <strong>Janma Nakshatra:</strong> ${nakshatras[birthIndex]}<br>
-          <strong>Current Nakshatra:</strong> ${nakshatras[currentIndex]}<br>
-          <strong>Tara Type:</strong> ${taraTypes[taraIndex]}<br>
+          <strong>Current Nakshatra:</strong> ${nakshatras[currentIndex]} — Nakshatra Number from Janma: <strong>${nakCount}</strong><br>
+          <strong>Tara Type:</strong> ${taraTypes[taraIndex]} — Tara Number: <strong>${taraIndex + 1}</strong><br>
           <strong>Tara Meaning:</strong> ${taraMeanings[taraIndex]}<br>
           <strong>Navatara Lord:</strong> ${navataraLords[taraIndex]}
         `;
